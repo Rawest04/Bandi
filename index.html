@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidature | FiveWorlds RP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #000000; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, #000000 85%); z-index: -1; }
+        .main-card { animation: fadeIn 0.6s ease-out; background: rgba(10, 10, 10, 0.98); border: 1px solid #1e293b; border-radius: 4px; box-shadow: 0 0 50px rgba(0, 0, 0, 0.9); width: 100%; max-width: 700px; padding: 40px; position: relative; }
+        .main-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+        
+        .progress-container { margin-bottom: 30px; }
+        .progress-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+        .progress-bar { width: 100%; height: 4px; background: #1e293b; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); width: 0%; transition: width 0.3s ease; border-radius: 2px; }
+        
+        .section-header { border-bottom: 1px solid #1e293b; margin-bottom: 20px; margin-top: 10px; padding-bottom: 5px; color: #3b82f6; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; animation: slideInRight 0.5s ease-out; }
+        
+        .form-group { animation: fadeIn 0.6s ease-out; }
+        .input-style { background: #0f172a; border: 1px solid #1e293b; color: #fff; padding: 12px; border-radius: 4px; width: 100%; outline: none; transition: 0.3s; font-size: 0.9rem; }
+        .input-style:hover { border-color: #3b82f6; background: #151f33; }
+        .input-style:focus { border-color: #3b82f6; background: #151f33; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        .input-style.error { border-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+        
+        label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 5px; margin-top: 12px; }
+        
+        .error-message { display: none; font-size: 0.7rem; color: #ef4444; margin-top: 4px; }
+        .error-message.show { display: block; }
+        
+        .btn-five { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 16px; width: 100%; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; border: none; margin-top: 35px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .btn-five::before { content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.1); transition: left 0.3s; }
+        .btn-five:hover::before { left: 100%; }
+        .btn-five:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); }
+        .btn-five:active { transform: translateY(0); }
+        .btn-five:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        #status { animation: slideInRight 0.3s ease-out; position: fixed; top: 20px; right: 20px; max-width: 350px; padding: 16px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; border-left: 4px solid; z-index: 1000; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); display: none; }
+        #status.success { background: rgba(16, 185, 129, 0.1); border-left-color: #10b981; color: #10b981; }
+        #status.error { background: rgba(239, 68, 68, 0.1); border-left-color: #ef4444; color: #ef4444; }
+        
+        #gov-roles-container { display: none; animation: fadeIn 0.3s ease-out; }
+        
+        textarea { resize: vertical; min-height: 80px; }
+        
+        @media (max-width: 640px) {
+            .main-card { padding: 25px; }
+            #status { max-width: calc(100vw - 40px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="main-card">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold italic tracking-tighter">FIVEWORLDS<span class="text-blue-500">RP</span></h1>
+            <p class="text-gray-500 text-xs uppercase tracking-[0.3em] mt-2">Portale Candidature Statali</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-label">Completamento Form: <span id="progressPercent">0%</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <form id="appForm">
+            <div class="form-group">
+                <label>Seleziona Destinazione</label>
+                <select id="job" required class="input-style text-blue-400 font-bold" onchange="toggleGovRoles(); updateProgress()">
+                    <option value="" disabled selected>-- SELEZIONA IL DIPARTIMENTO --</option>
+                    <option value="LSPD">LSPD</option>
+                    <option value="EMS">EMS</option>
+                    <option value="GOVERNO">GOVERNO & MAGISTRATURA</option>
+                </select>
+                <div class="error-message" id="error-job"></div>
+            </div>
+
+            <div id="gov-roles-container">
+                <div class="form-group">
+                    <label>Ruolo Specifico nel Governo</label>
+                    <select id="gov-role" class="input-style border-blue-900" onchange="updateProgress()">
+                        <option value="Giudice">Giudice</option>
+                        <option value="Avvocato">Avvocato</option>
+                        <option value="Agente Servizi Segreti">Marshal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-header">● Informazioni IC (In Character)</div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" id="ic_name" placeholder="Nome IC" required class="input-style" onchange="updateProgress()" oninput="validateField(this)">
+                    <div class="error-message" id="error-ic_name"></div>
+                </div>
+                <div class="form-group">
+                    <label>Cognome</label>
+                    <input type="text" id="ic_surname" placeholder="Cognome IC" required class="input-style" onchange="updateProgress()" oninput="validateField(this)">
+                    <div class="error-message" id="error-ic_surname"></div>
+                </div>
+                <div class="form-group">
+                    <label>Data di Nascita</label>
+                    <input type="text" id="ic_birth" placeholder="GG/MM/AAAA" required class="input-style" onchange="updateProgress()" oninput="validateField(this)">
+                    <div class="error-message" id="error-ic_birth"></div>
+                </div>
+                <div class="form-group">
+                    <label>Età</label>
+                    <input type="number" id="ic_age" placeholder="Età IC" required class="input-style" onchange="updateProgress()" oninput="validateField(this)">
+                    <div class="error-message" id="error-ic_age"></div>
+                </div>
+                <div class="form-group">
+                    <label>Stato Fedina Penale</label>
+                    <select id="ic_record" required class="input-style" onchange="updateProgress()">
+                        <option value="">-- Seleziona --</option>
+                        <option value="Pulita">Pulita</option>
+                        <option value="Sporca">Sporca</option>
+                    </select>
+                    <div class="error-message" id="error-ic_record"></div>
+                </div>
+                <div class="form-group">
+                    <label>Porto d'Armi (PDA)</label>
+                    <select id="ic_pda" required class="input-style" onchange="updateProgress()">
+                        <option value="">-- Seleziona --</option>
+                        <option value="SÌ">Posseduto (SÌ)</option>
+                        <option value="NO">Non Posseduto (NO)</option>
+                    </select>
+                    <div class="error-message" id="error-ic_pda"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tag Discord (Per ricontatto)</label>
+                <input type="text" id="discord" placeholder="User" required class="input-style" onchange="updateProgress()" oninput="validateField(this)">
+                <div class="error-message" id="error-discord"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Percorso formativo ed esperienza pregressa?</label>
+                <textarea id="ic_history" rows="3" placeholder="Scuole, accademie, precedenti lavori..." required class="input-style" onchange="updateProgress()" oninput="validateField(this)"></textarea>
+                <div class="error-message" id="error-ic_history"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Parlaci di te (Carattere e Motivazioni)</label>
+                <textarea id="ic_about" rows="4" placeholder="Perché dovremmo prendere proprio te?" required class="input-style" onchange="updateProgress()" oninput="validateField(this)"></textarea>
+                <div class="error-message" id="error-ic_about"></div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-five">Invia Candidatura</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // --- CONFIGURAZIONE WEBHOOKS ---
+        const WEBHOOKS = {
+            LSPD: "INSERISCI_WEBHOOK_LSPD",
+            EMS: "https://discord.com/api/webhooks/1467317916751102066/EyS3DQ1w9MyperwVIUZeqTIBz4yi642GenLUbzX__uj9eJZ4jLcQ5sK0iCUai1GMybYR",
+            GOVERNO: "INSERISCI_WEBHOOK_GOVERNO"
+        };
+
+        // --- VALIDAZIONI ---
+        const validations = {
+            ic_name: (val) => val.trim().length >= 2 ? true : "Il nome deve avere almeno 2 caratteri",
+            ic_surname: (val) => val.trim().length >= 2 ? true : "Il cognome deve avere almeno 2 caratteri",
+            ic_birth: (val) => /^\d{2}\/\d{2}\/\d{4}$/.test(val) ? true : "Formato data: GG/MM/AAAA",
+            ic_age: (val) => val >= 18 && val <= 100 ? true : "L'età deve essere tra 18 e 100",
+            discord: (val) => val.trim().length >= 2 ? true : "Inserisci il tuo nome Discord",
+            ic_history: (val) => val.trim().length >= 20 ? true : "Deve avere almeno 20 caratteri",
+            ic_about: (val) => val.trim().length >= 30 ? true : "Deve avere almeno 30 caratteri"
+        };
+
+        function validateField(field) {
+            const id = field.id;
+            const validator = validations[id];
+            const errorElement = document.getElementById(`error-${id}`);
+            
+            if (!validator) return true;
+            
+            const result = validator(field.value);
+            const isValid = result === true;
+            
+            field.classList.toggle('error', !isValid);
+            if (errorElement) {
+                errorElement.textContent = isValid ? "" : result;
+                errorElement.classList.toggle('show', !isValid);
+            }
+            
+            return isValid;
+        }
+
+        function validateForm() {
+            const fields = ['job', 'ic_name', 'ic_surname', 'ic_birth', 'ic_age', 'ic_record', 'ic_pda', 'discord', 'ic_history', 'ic_about'];
+            let isValid = true;
+
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value === '') {
+                    isValid = false;
+                    field.classList.add('error');
+                    const errorElement = document.getElementById(`error-${fieldId}`);
+                    if (errorElement) {
+                        errorElement.textContent = "Questo campo è obbligatorio";
+                        errorElement.classList.add('show');
+                    }
+                } else if (field && validations[fieldId]) {
+                    if (!validateField(field)) isValid = false;
+                }
+            });
+
+            if (document.getElementById('job').value === 'GOVERNO' && document.getElementById('gov-role').value === '') {
+                isValid = false;
+                showStatus("Seleziona un ruolo nel governo", "error");
+            }
+
+            return isValid;
+        }
+
+        function updateProgress() {
+            const fields = [
+                'job', 'ic_name', 'ic_surname', 'ic_birth', 'ic_age', 'ic_record', 'ic_pda', 'discord', 'ic_history', 'ic_about'
+            ];
+            
+            let filled = 0;
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value.trim() !== '') filled++;
+            });
+
+            const percentage = Math.round((filled / fields.length) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressPercent').textContent = percentage + '%';
+        }
+
+        function toggleGovRoles() {
+            const job = document.getElementById('job').value;
+            const govContainer = document.getElementById('gov-roles-container');
+            govContainer.style.display = (job === 'GOVERNO') ? 'block' : 'none';
+        }
+
+        document.getElementById('appForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                showStatus("Compila tutti i campi correttamente", "error");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const job = document.getElementById('job').value;
+            const webhookUrl = WEBHOOKS[job];
+
+            if (webhookUrl.includes("INSERISCI")) {
+                showStatus("Il webhook per questo dipartimento non è configurato", "error");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "INVIO IN CORSO...";
+
+            let ruoloTitolo = job;
+            if(job === 'GOVERNO') ruoloTitolo += " (" + document.getElementById('gov-role').value + ")";
+
+            const payload = {
+                username: "FiveWorlds Portal",
+                embeds: [{
+                    title: "📄 NUOVA CANDIDATURA: " + ruoloTitolo,
+                    color: 3447003,
+                    fields: [
+                        { name: "👤 Candidato", value: document.getElementById('ic_name').value + " " + document.getElementById('ic_surname').value, inline: true },
+                        { name: "📅 Data Nascita", value: document.getElementById('ic_birth').value, inline: true },
+                        { name: "🔢 Età", value: document.getElementById('ic_age').value, inline: true },
+                        { name: "⚖️ Fedina Penale", value: document.getElementById('ic_record').value, inline: true },
+                        { name: "🔫 Porto d'Armi", value: document.getElementById('ic_pda').value, inline: true },
+                        { name: "🆔 Discord Tag", value: document.getElementById('discord').value, inline: true },
+                        { name: "🎓 Formazione", value: "```" + document.getElementById('ic_history').value + "```" },
+                        { name: "🎙️ Biografia", value: "```" + document.getElementById('ic_about').value + "```" }
+                    ],
+                    footer: { text: "FiveWorlds RP | Portale Ufficiale" },
+                    timestamp: new Date()
+                }]
+            };
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+
+                if(response.ok) {
+                    showStatus("✓ Candidatura inviata con successo!", "success");
+                    document.getElementById('appForm').reset();
+                    updateProgress();
+                    toggleGovRoles();
+                    setTimeout(() => document.getElementById('status').style.display = 'none', 4000);
+                } else { 
+                    throw new Error(response.statusText); 
+                }
+            } catch (error) {
+                showStatus("✗ Errore nell'invio. Verifica che il bando sia aperto!", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "INVIA CANDIDATURA";
+            }
+        });
+
+        function showStatus(text, type) {
+            const status = document.getElementById('status');
+            status.textContent = text;
+            status.className = type;
+            status.style.display = "block";
+        }
+
+        // Aggiorna progress al caricamento
+        document.addEventListener('DOMContentLoaded', updateProgress);
+    </script>
+</body>
+</html>
